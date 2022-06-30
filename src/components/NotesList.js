@@ -1,4 +1,5 @@
 import { List } from "@mantine/core";
+import { supabase } from '../supabaseClient'
 
 const NotesList = () => {
   const notes = [
@@ -12,6 +13,11 @@ const NotesList = () => {
       name: "Note 3",
     },
   ];
+
+
+  const { data, error } = supabase.from("notes").select();
+  console.log(data);
+
 
   return (
     <div>

@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RichTextEditor } from "@mantine/rte";
 import { AppShell, Navbar, Header, Input } from "@mantine/core";
 import NotesList from "./components/NotesList";
+import { supabase } from './supabaseClient'
+import Auth from './Auth'
+import Account from './Account'
 
 const initialValue =
   "<p>Your initial <b>html value</b> or an empty string to init editor without value</p>";
@@ -9,6 +12,16 @@ const initialValue =
 function App() {
   const [value, onChange] = useState(initialValue);
   const [searchTerm, setSearchTerm] = useState("");
+  const [session, setSession] = useState(null)
+
+  useEffect(() => {
+    setSession(supabase.auth.session())
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+
   return (
     <div className="App">
       <AppShell
@@ -33,6 +46,7 @@ function App() {
           },
         })}
       >
+        {/* {!session ? <Auth /> : <Account key={session.user.id} session={session} />} */}
         <RichTextEditor value={value} onChange={onChange} />
       </AppShell>
     </div>
