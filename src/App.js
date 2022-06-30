@@ -1,26 +1,33 @@
 import { useState, useEffect } from "react";
 import { RichTextEditor } from "@mantine/rte";
-import { AppShell, Navbar, Header, Input } from "@mantine/core";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Input,
+  Space,
+  ScrollArea,
+} from "@mantine/core";
 import NotesList from "./components/NotesList";
-import { supabase } from './supabaseClient'
-import Auth from './Auth'
-import Account from './Account'
-
-const initialValue =
-  "<p>Your initial <b>html value</b> or an empty string to init editor without value</p>";
+import { supabase } from "./supabaseClient";
 
 function App() {
-  const [value, onChange] = useState(initialValue);
+  const [value, setValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [session, setSession] = useState(null)
+  const [currentNote, setCurrentNote] = useState(null);
 
   useEffect(() => {
-    setSession(supabase.auth.session())
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-  }, [])
+    const getNoteContent = async () => {
+      const { data } = await supabase
+        .from("notes")
+        .select("content")
+        .eq("id", currentNote);
+      if (data.length > 0) {
+        setValue(data[0].content);
+      }
+    };
+    getNoteContent();
+  }, [currentNote]);
 
   return (
     <div className="App">
@@ -28,8 +35,13 @@ function App() {
         padding="md"
         navbar={
           <Navbar width={{ base: 300 }} height={500} p="xs">
-            <Input placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-            <NotesList />
+            <Input
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Space h="xs" />
+            <NotesList setCurrentNote={setCurrentNote} />
           </Navbar>
         }
         header={
@@ -46,8 +58,9 @@ function App() {
           },
         })}
       >
-        {/* {!session ? <Auth /> : <Account key={session.user.id} session={session} />} */}
-        <RichTextEditor value={value} onChange={onChange} />
+        <ScrollArea style={{ height: "calc(95vh - 60px)" }}>
+          <RichTextEditor value={value} onChange={setValue} />
+        </ScrollArea>
       </AppShell>
     </div>
   );
