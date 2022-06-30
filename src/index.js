@@ -6,7 +6,7 @@ import { MantineProvider } from "@mantine/core";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <MantineProvider
-    theme={{ fontFamily: "Open Sans", colorScheme: "dark" }}
+    theme={{ colorScheme: "dark" }}
     withGlobalStyles
     withNormalizeCSS
   >

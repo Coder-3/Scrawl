@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { RichTextEditor } from "@mantine/rte";
-import { AppShell, Navbar, Header } from "@mantine/core";
+import { AppShell, Navbar, Header, Input } from "@mantine/core";
+import NotesList from "./components/NotesList";
 
 const initialValue =
   "<p>Your initial <b>html value</b> or an empty string to init editor without value</p>";
 
 function App() {
   const [value, onChange] = useState(initialValue);
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <div className="App">
       <AppShell
         padding="md"
         navbar={
           <Navbar width={{ base: 300 }} height={500} p="xs">
-            {/* Navbar content */}
+            <Input placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <NotesList />
           </Navbar>
         }
         header={
