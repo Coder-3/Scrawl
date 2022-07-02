@@ -1,6 +1,4 @@
 import { Button, ScrollArea, Stack } from "@mantine/core";
-import { supabase } from "../supabaseClient";
-import { useState, useEffect } from "react";
 
 const NotesList = ({ notes, setCurrentNote }) => {
   return (
