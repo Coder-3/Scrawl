@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEditor } from "@tiptap/react";
 import Auth from "./Auth";
@@ -14,6 +14,7 @@ import {
   Container,
   Grid,
   Group,
+  Text,
 } from "@mantine/core";
 import NotesList from "./components/NotesList";
 import { supabase } from "./supabaseClient";
@@ -26,6 +27,8 @@ function App() {
   const [currentNote, setCurrentNote] = useState(null);
   const [session, setSession] = useState(null);
   const [notes, setNotes] = useState([]);
+
+  const titleRef = useRef(null);
 
   const getNotes = async () => {
     const user = supabase.auth.user();
@@ -128,6 +131,11 @@ function App() {
     }
   };
 
+  const handleSignout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+  };
+
   return (
     <div className="App">
       {!session ? (
@@ -138,7 +146,13 @@ function App() {
           navbar={
             <Navbar width={{ base: 300 }} p="xs">
               <Container>
-                <Button variant="filled" onClick={() => clearNote()}>
+                <Button
+                  variant="filled"
+                  onClick={() => {
+                    clearNote();
+                    titleRef.current.focus();
+                  }}
+                >
                   Create Note
                 </Button>
               </Container>
@@ -155,10 +169,26 @@ function App() {
           header={
             <Header height={60} p="xs">
               <Grid justify="space-between" align="center">
-                <Grid.Col span={2}>
+                <Grid.Col span={6}>
                   <Title order={2}>Notes</Title>
                 </Grid.Col>
-                <Grid.Col span={2}>Logged in as {session.user.email}</Grid.Col>
+                <Grid.Col span={6}>
+                  <Grid justify="flex-end" align="center">
+                    <Grid.Col span={6}>
+                      <Text align="right">
+                        Logged in as {session.user.email}
+                      </Text>
+                    </Grid.Col>
+                    <Grid.Col span={2}>
+                      <Button
+                        onClick={() => handleSignout()}
+                        style={{ width: "100%" }}
+                      >
+                        Sign out
+                      </Button>
+                    </Grid.Col>
+                  </Grid>
+                </Grid.Col>
               </Grid>
             </Header>
           }
@@ -175,6 +205,7 @@ function App() {
             <Input
               value={title}
               placeholder="Note title"
+              ref={titleRef}
               onChange={(e) => setTitle(e.target.value)}
             />
             <Space h="md" />
