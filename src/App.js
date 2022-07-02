@@ -47,7 +47,7 @@ function App() {
     getNotes().then((data) => {
       setNotes(data);
     });
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     setSession(supabase.auth.session());
