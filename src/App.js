@@ -29,6 +29,15 @@ function App() {
   const [currentNote, setCurrentNote] = useState(null);
   const [session, setSession] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      setFilteredNotes(notes.filter((note) => note.title.toLowerCase().includes(searchTerm.toLowerCase())));
+    } else {
+      setFilteredNotes(notes);
+    }
+  }, [searchTerm, notes]);
 
   const titleRef = useRef(null);
 
@@ -164,7 +173,7 @@ function App() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Space h="xs" />
-              <NotesList notes={notes} setCurrentNote={setCurrentNote} />
+              <NotesList notes={filteredNotes} setCurrentNote={setCurrentNote} />
             </Navbar>
           }
           header={
