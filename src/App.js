@@ -15,6 +15,8 @@ import {
   Grid,
   Group,
   Text,
+  Image,
+  Affix,
 } from "@mantine/core";
 import NotesList from "./components/NotesList";
 import { supabase } from "./supabaseClient";
@@ -137,12 +139,11 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <>
       {!session ? (
         <Auth />
       ) : (
         <AppShell
-          padding="md"
           navbar={
             <Navbar width={{ base: 300 }} p="xs">
               <Container>
@@ -153,7 +154,7 @@ function App() {
                     titleRef.current.focus();
                   }}
                 >
-                  Create Note
+                  create note
                 </Button>
               </Container>
               <Space h="sm" />
@@ -170,13 +171,22 @@ function App() {
             <Header height={60} p="xs">
               <Grid justify="space-between" align="center">
                 <Grid.Col span={6}>
-                  <Title order={2}>Notes</Title>
+                  <Grid align="center" ml="xs">
+                    <Image
+                      src="logo.png"
+                      alt="logo"
+                      width="60px"
+                      height="60px"
+                    />
+                    <Space w="md" />
+                    <Title order={2}>ai notes</Title>
+                  </Grid>
                 </Grid.Col>
                 <Grid.Col span={6}>
                   <Grid justify="flex-end" align="center">
                     <Grid.Col span={6}>
                       <Text align="right">
-                        Logged in as {session.user.email}
+                        logged in as {session.user.email}
                       </Text>
                     </Grid.Col>
                     <Grid.Col span={2}>
@@ -184,7 +194,7 @@ function App() {
                         onClick={() => handleSignout()}
                         style={{ width: "100%" }}
                       >
-                        Sign out
+                        sign out
                       </Button>
                     </Grid.Col>
                   </Grid>
@@ -201,7 +211,7 @@ function App() {
             },
           })}
         >
-          <ScrollArea style={{ height: "calc(90vh - 60px)" }}>
+          <ScrollArea px="md" style={{ height: "calc(85% - 60px)", maxHeight: "calc(85vh - 60px)" }}>
             <Input
               value={title}
               placeholder="Note title"
@@ -210,22 +220,24 @@ function App() {
             />
             <Space h="md" />
             <Tiptap editor={editor} />
+            <Affix position={{ bottom: 20, left: 316 }}>
             <Group spacing="sm">
               <Button onClick={handleSave} variant="filled">
-                Save
+                save
               </Button>
               <Button
                 disabled={!currentNote}
                 onClick={handleDelete}
                 variant="outline"
               >
-                Delete
+                delete
               </Button>
             </Group>
+            </Affix>
           </ScrollArea>
         </AppShell>
       )}
-    </div>
+    </>
   );
 }
 

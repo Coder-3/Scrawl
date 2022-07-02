@@ -10,7 +10,7 @@ const MenuBar = ({ editor }) => {
   }
 
   return (
-    <>
+    <div style={{ backgroundColor: "#0d0d0d", borderRadius: "4px 4px 0 0", padding: 10, margin: 0 }}>
       <Button
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={editor.isActive("bold") ? "is-active" : ""}
@@ -39,10 +39,16 @@ const MenuBar = ({ editor }) => {
       >
         code
       </Button>
-      <Button onClick={() => editor.chain().focus().unsetAllMarks().run()} variant="subtle">
+      <Button
+        onClick={() => editor.chain().focus().unsetAllMarks().run()}
+        variant="subtle"
+      >
         clear marks
       </Button>
-      <Button onClick={() => editor.chain().focus().clearNodes().run()} variant="subtle">
+      <Button
+        onClick={() => editor.chain().focus().clearNodes().run()}
+        variant="subtle"
+      >
         clear nodes
       </Button>
       <Button
@@ -122,22 +128,40 @@ const MenuBar = ({ editor }) => {
       >
         blockquote
       </Button>
-      <Button onClick={() => editor.chain().focus().setHorizontalRule().run()} variant="subtle">
+      <Button
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        variant="subtle"
+      >
         horizontal rule
       </Button>
-      <Button onClick={() => editor.chain().focus().setHardBreak().run()} variant="subtle">
+      <Button
+        onClick={() => editor.chain().focus().setHardBreak().run()}
+        variant="subtle"
+      >
         hard break
       </Button>
-      <Button onClick={() => editor.chain().focus().undo().run()} variant="subtle">undo</Button>
-      <Button onClick={() => editor.chain().focus().redo().run()} variant="subtle">redo</Button>
-    </>
+      <Button
+        onClick={() => editor.chain().focus().undo().run()}
+        variant="subtle"
+      >
+        undo
+      </Button>
+      <Button
+        onClick={() => editor.chain().focus().redo().run()}
+        variant="subtle"
+      >
+        redo
+      </Button>
+    </div>
   );
 };
 
 const TipTap = ({ editor, handleChange }) => {
   return (
     <div>
-      <MenuBar editor={editor} />
+      <div style={{ position: "sticky", top: 0, zIndex: 9999 }}>
+        <MenuBar editor={editor} />
+      </div>
       <EditorContent editor={editor} />
     </div>
   );

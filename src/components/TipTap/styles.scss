@@ -1,8 +1,15 @@
 .ProseMirror {
-  margin: 15px 0;
-  padding: 0 20px;
-  border: 1px solid deepskyblue;
-  border-radius: 4px;
+  margin: 0;
+  padding: 10px 20px;
+  border-radius: 0 0 4px 4px;
+  background-color: #2c2e33;
+  min-height: 200px;
+
+  // change border on focus
+  &:focus {
+    outline: none;
+    border: 1px solid #2f9e44;
+  }
 
   > * + * {
     margin-top: 0.75em;
@@ -10,7 +17,7 @@
 
   ul,
   ol {
-    padding: 0 1rem;
+    padding-left: 2rem;
   }
 
   h1,
@@ -19,7 +26,13 @@
   h4,
   h5,
   h6 {
-    line-height: 1.1;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  p {
+    line-height: 1.5;
+    margin: 0;
   }
 
   code {
