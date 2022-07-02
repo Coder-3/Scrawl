@@ -205,6 +205,7 @@ function App() {
                   onClick={() => {
                     clearNote();
                     titleRef.current.focus();
+                    setOpened(false);
                   }}
                 >
                   create note
@@ -220,6 +221,7 @@ function App() {
               <NotesList
                 notes={filteredNotes}
                 setCurrentNote={setCurrentNote}
+                setOpened={setOpened}
               />
             </Navbar>
           }

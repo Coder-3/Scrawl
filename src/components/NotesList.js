@@ -1,6 +1,6 @@
 import { Button, ScrollArea, Stack } from "@mantine/core";
 
-const NotesList = ({ notes, setCurrentNote }) => {
+const NotesList = ({ notes, setCurrentNote, setOpened }) => {
   return (
     <div style={{ height: "100%" }}>
       <ScrollArea
@@ -12,7 +12,10 @@ const NotesList = ({ notes, setCurrentNote }) => {
             <Button
               variant="subtle"
               key={note.id}
-              onClick={() => setCurrentNote(note.id)}
+              onClick={() => {
+                setCurrentNote(note.id);
+                setOpened(false);
+              }}
             >
               {note.title}
             </Button>
