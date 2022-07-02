@@ -12,11 +12,14 @@ import {
   Button,
   Title,
   Container,
-  Grid,
   Group,
   Text,
   Image,
   Affix,
+  MediaQuery,
+  SimpleGrid,
+  Burger,
+  Divider,
 } from "@mantine/core";
 import NotesList from "./components/NotesList";
 import { supabase } from "./supabaseClient";
@@ -30,10 +33,15 @@ function App() {
   const [session, setSession] = useState(null);
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
+  const [opened, setOpened] = useState(false);
 
   useEffect(() => {
     if (searchTerm) {
-      setFilteredNotes(notes.filter((note) => note.title.toLowerCase().includes(searchTerm.toLowerCase())));
+      setFilteredNotes(
+        notes.filter((note) =>
+          note.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     } else {
       setFilteredNotes(notes);
     }
@@ -98,8 +106,15 @@ function App() {
   }, [editor, value]);
 
   const handleSave = async () => {
-    const content = editor.getHTML();
     const user = supabase.auth.user();
+    if (!title) {
+      alert("Please add a title");
+      return;
+    } else if (!user) {
+      alert("You need to be logged in to save notes");
+      return;
+    }
+    const content = editor.getHTML();
     const note = {
       content,
       title,
@@ -153,8 +168,37 @@ function App() {
         <Auth />
       ) : (
         <AppShell
+          navbarOffsetBreakpoint="sm"
+          fixed
           navbar={
-            <Navbar width={{ base: 300 }} p="xs">
+            <Navbar
+              width={{ sm: 200, lg: 300 }}
+              p="xs"
+              hiddenBreakpoint="sm"
+              hidden={!opened}
+            >
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <SimpleGrid cols={2}>
+                  <div>
+                    <Text size="sm" mb="lg">
+                      logged in as {session.user.email}
+                    </Text>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      mt="sm"
+                      onClick={handleSignout}
+                    >
+                      sign out
+                    </Button>
+                  </div>
+                </SimpleGrid>
+              </MediaQuery>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Divider mb="sm" />
+              </MediaQuery>
               <Container>
                 <Button
                   variant="filled"
@@ -168,47 +212,86 @@ function App() {
               </Container>
               <Space h="sm" />
               <Input
-                placeholder="Search"
+                placeholder="search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Space h="xs" />
-              <NotesList notes={filteredNotes} setCurrentNote={setCurrentNote} />
+              <NotesList
+                notes={filteredNotes}
+                setCurrentNote={setCurrentNote}
+              />
             </Navbar>
           }
           header={
-            <Header height={60} p="xs">
-              <Grid justify="space-between" align="center">
-                <Grid.Col span={6}>
-                  <Grid align="center" ml="xs">
+            <Header height={60}>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <SimpleGrid
+                  style={{
+                    height: "100%",
+                    alignItems: "center",
+                    margin: "0 16px",
+                  }}
+                  cols={2}
+                >
+                  <div>
+                    <Burger
+                      opened={opened}
+                      onClick={() => setOpened((o) => !o)}
+                      size="sm"
+                      color="gray"
+                      mr="xl"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <div>
+                      <Image
+                        src="logo.png"
+                        alt="logo"
+                        width="50px"
+                        height="50px"
+                      />
+                    </div>
+                    <Space w="md" />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Text size="xl" weight="bold" style={{ lineHeight: 1 }}>
+                        ai notes
+                      </Text>
+                    </div>
+                  </div>
+                </SimpleGrid>
+              </MediaQuery>
+              <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                <SimpleGrid cols={2} style={{ height: "100%" }}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
                     <Image
                       src="logo.png"
                       alt="logo"
-                      width="60px"
-                      height="60px"
+                      width="50px"
+                      height="50px"
                     />
                     <Space w="md" />
                     <Title order={2}>ai notes</Title>
-                  </Grid>
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <Grid justify="flex-end" align="center">
-                    <Grid.Col span={6}>
-                      <Text align="right">
-                        logged in as {session.user.email}
-                      </Text>
-                    </Grid.Col>
-                    <Grid.Col span={2}>
-                      <Button
-                        onClick={() => handleSignout()}
-                        style={{ width: "100%" }}
-                      >
-                        sign out
-                      </Button>
-                    </Grid.Col>
-                  </Grid>
-                </Grid.Col>
-              </Grid>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Text size="sm" mr="sm">
+                      logged in as {session.user.email}
+                    </Text>
+                  </div>
+                </SimpleGrid>
+              </MediaQuery>
             </Header>
           }
           styles={(theme) => ({
@@ -220,16 +303,24 @@ function App() {
             },
           })}
         >
-          <ScrollArea px="md" style={{ height: "calc(85% - 60px)", maxHeight: "calc(85vh - 60px)" }}>
-            <Input
-              value={title}
-              placeholder="Note title"
-              ref={titleRef}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-            <Space h="md" />
+          <Input
+            value={title}
+            placeholder="note title"
+            ref={titleRef}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <Space h="md" />
+          <ScrollArea
+            px="md"
+            type="auto"
+            style={{
+              height: "calc(85% - 60px)",
+              maxHeight: "calc(85vh - 60px)",
+            }}
+          >
             <Tiptap editor={editor} />
-            <Affix position={{ bottom: 20, left: 316 }}>
+          </ScrollArea>
+          <Affix position={{ bottom: 20, right: 20 }} zIndex={10}>
             <Group spacing="sm">
               <Button onClick={handleSave} variant="filled">
                 save
@@ -242,8 +333,7 @@ function App() {
                 delete
               </Button>
             </Group>
-            </Affix>
-          </ScrollArea>
+          </Affix>
         </AppShell>
       )}
     </>

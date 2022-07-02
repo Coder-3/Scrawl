@@ -2,7 +2,7 @@ import "./styles.scss";
 
 import { EditorContent } from "@tiptap/react";
 import React from "react";
-import { Button } from "@mantine/core";
+import { Button, MediaQuery } from "@mantine/core";
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -10,7 +10,14 @@ const MenuBar = ({ editor }) => {
   }
 
   return (
-    <div style={{ backgroundColor: "#0d0d0d", borderRadius: "4px 4px 0 0", padding: 10, margin: 0 }}>
+    <div
+      style={{
+        backgroundColor: "#0d0d0d",
+        borderRadius: "4px 4px 0 0",
+        padding: 10,
+        margin: 0,
+      }}
+    >
       <Button
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={editor.isActive("bold") ? "is-active" : ""}
@@ -159,9 +166,11 @@ const MenuBar = ({ editor }) => {
 const TipTap = ({ editor, handleChange }) => {
   return (
     <div>
-      <div style={{ position: "sticky", top: 0, zIndex: 9999 }}>
-        <MenuBar editor={editor} />
-      </div>
+      <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+        <div style={{ position: "sticky", top: -2, zIndex: 10 }}>
+          <MenuBar editor={editor} />
+        </div>
+      </MediaQuery>
       <EditorContent editor={editor} />
     </div>
   );
