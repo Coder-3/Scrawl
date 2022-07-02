@@ -1,3 +1,11 @@
+import {
+  Button,
+  Input,
+  Title,
+  Text,
+  Container,
+  Space,
+} from "@mantine/core";
 import { useState } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -21,18 +29,15 @@ export default function Auth() {
   };
 
   return (
-    <div className="row flex flex-center">
-      <div className="col-6 form-widget" aria-live="polite">
-        <h1 className="header">Supabase + React</h1>
-        <p className="description">
-          Sign in via magic link with your email below
-        </p>
+      <Container size="xs" style={{ marginTop: "5vh" }}>
+        <Title order={1}>LogIn/Signup</Title>
+        <Text>Sign in via magic link with your email below</Text>
+        <Space h="sm" />
         {loading ? (
           "Sending magic link..."
         ) : (
           <form onSubmit={handleLogin}>
-            <label htmlFor="email">Email</label>
-            <input
+            <Input
               id="email"
               className="inputField"
               type="email"
@@ -40,12 +45,10 @@ export default function Auth() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <button className="button block" aria-live="polite">
-              Send magic link
-            </button>
+            <Space h="sm" />
+            <Button>Send magic link</Button>
           </form>
         )}
-      </div>
-    </div>
+      </Container>
   );
 }
