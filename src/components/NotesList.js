@@ -1,11 +1,12 @@
-import { Button, ScrollArea, Stack } from "@mantine/core";
+import { Button, ScrollArea, Stack, Anchor } from "@mantine/core";
 
 const NotesList = ({ notes, setCurrentNote, setOpened }) => {
   return (
     <div style={{ height: "100%" }}>
       <ScrollArea
         type="auto"
-        style={{ height: "calc(85% - 60px)", maxHeight: "calc(85vh - 60px)" }}
+        style={{ height: "calc(100vh - 190px)" }}
+        pr="sm"
       >
         <Stack style={{ gap: 0 }}>
           {notes.map((note) => (
@@ -16,6 +17,7 @@ const NotesList = ({ notes, setCurrentNote, setOpened }) => {
                 setCurrentNote(note.id);
                 setOpened(false);
               }}
+              styles={{ inner: { justifyContent: "flex-start" } }}
             >
               {note.title}
             </Button>

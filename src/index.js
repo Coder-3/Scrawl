@@ -8,10 +8,10 @@ root.render(
   <MantineProvider
     theme={{
       colorScheme: "dark",
-      fontFamily: "monospace",
-      primaryColor: "green",
+      fontFamily: "Tahoma, sans-serif",
+      primaryColor: "gray",
       headings: {
-        fontFamily: "monospace",
+        fontFamily: "Tahoma, sans-serif",
       },
     }}
     withGlobalStyles
