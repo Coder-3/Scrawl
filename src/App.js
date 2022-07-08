@@ -1,25 +1,21 @@
 import { useState, useRef } from "react";
 import MDEditor from "@uiw/react-md-editor";
-import MarkdownEditor from "@uiw/react-markdown-editor";
 import {
   AppShell,
   Navbar,
   Header,
   Input,
   Space,
-  ScrollArea,
   Button,
-  Title,
   Container,
   Group,
   Text,
-  Image,
   Affix,
   MediaQuery,
   SimpleGrid,
   Burger,
-  Divider,
   Center,
+  SegmentedControl,
   Grid,
   Avatar,
 } from "@mantine/core";
@@ -39,12 +35,15 @@ function App() {
   const [title, setTitle] = useState("");
   const [value, setContent] = useState("");
   const { height } = useViewportSize();
-  const [editorHeight, setEditorHeight] = useState(height - 150);
+  const [editorHeight, setEditorHeight] = useState(height - 180);
+  const [editorMode, setEditorMode] = useState("edit");
+  const [smEditorHeight, setSmEditorHeight] = useState(height - 250);
 
   const titleRef = useRef(null);
 
   useEffect(() => {
-    setEditorHeight(height - 180);
+    setEditorHeight(height - 200);
+    setSmEditorHeight(height - 170);
   }, [height]);
 
   useEffect(() => {
@@ -133,7 +132,6 @@ function App() {
     if (currentNote) {
       note["id"] = currentNote;
     }
-    console.log(note, currentNote);
     await supabase.from("notes").upsert(note);
     clear();
     getNotes().then((data) => {
@@ -209,13 +207,11 @@ function App() {
               <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                 <Center mb="md">
                   <div style={{ display: "flex", alignItems: "center" }}>
-                      <Avatar mx="xs" src="logo.png" alt="" />
-                      <Text size="lg">
-                        Notes
-                      </Text>
-                    </div>
+                    <Avatar mx="xs" src="logo.png" alt="" />
+                    <Text size="lg">Notes</Text>
+                  </div>
                 </Center>
-                </MediaQuery>
+              </MediaQuery>
               <Center>
                 <Button onClick={newNote} mb="sm" fullWidth>
                   New Note
@@ -236,11 +232,11 @@ function App() {
             </Navbar>
           }
           header={
-            <Header height={60}>
+            <Header height={50}>
               <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
                 <Grid
                   justify="space-between"
-                  style={{ height: "75px", alignItems: "center" }}
+                  style={{ height: "65px", alignItems: "center" }}
                 >
                   <Grid.Col span={2}>
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -262,7 +258,7 @@ function App() {
               <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                 <SimpleGrid
                   cols={2}
-                  style={{ height: "60px", alignContent: "center" }}
+                  style={{ height: "50px", alignContent: "center" }}
                   mx="sm"
                 >
                   <div>
@@ -278,7 +274,9 @@ function App() {
                     style={{ display: "flex", justifyContent: "flex-end" }}
                     mr="sm"
                   >
-                    <Button onClick={handleSignout}>Sign Out</Button>
+                    <Button size="xs" onClick={handleSignout}>
+                      Sign Out
+                    </Button>
                   </div>
                 </SimpleGrid>
               </MediaQuery>
@@ -293,35 +291,90 @@ function App() {
             },
           })}
         >
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            mb="md"
-            size="md"
-            required
-            onBlur={handleAutoSave}
-            ref={titleRef}
-          />
-          <MarkdownEditor
-            value={value}
-            onChange={setContent}
-            height={editorHeight}
-            onBlur={handleAutoSave}
-          />
-          <Affix position={{ bottom: 20, right: 20 }} zIndex={10}>
-            <Group spacing="sm">
-              <Button onClick={handleSave} variant="filled">
-                save
-              </Button>
-              <Button
-                disabled={!currentNote}
-                onClick={handleDelete}
-                variant="outline"
-              >
-                delete
-              </Button>
-            </Group>
-          </Affix>
+          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+            <Container p={0} style={{ width: "100%", maxWidth: "100%"}}>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                mb="md"
+                size="md"
+                required
+                onBlur={handleAutoSave}
+                ref={titleRef}
+              />
+              <MDEditor
+                value={value}
+                onChange={setContent}
+                height={editorHeight}
+                onBlur={handleAutoSave}
+                preview="live"
+              />
+            </Container>
+          </MediaQuery>
+          <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+            <Container p={0} style={{ marginTop: "-10px" }}>
+              <Center>
+                <SegmentedControl
+                  value={editorMode}
+                  onChange={setEditorMode}
+                  size="sm"
+                  data={[
+                    { label: "Edit", value: "edit" },
+                    { label: "Preview", value: "preview" },
+                  ]}
+                />
+              </Center>
+              <Space h={5} />
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                mb="xs"
+                size="sm"
+                required
+                onBlur={handleAutoSave}
+                ref={titleRef}
+              />
+              <MDEditor
+                value={value}
+                onChange={setContent}
+                height={smEditorHeight}
+                onBlur={handleAutoSave}
+                preview={editorMode}
+                hideToolbar={true}
+              />
+              <Space h="xs" />
+              <Center>
+                <Button onClick={handleSave} size="xs" variant="filled">
+                  save
+                </Button>
+                <Button
+                  disabled={!currentNote}
+                  onClick={handleDelete}
+                  size="xs"
+                  variant="outline"
+                  ml="xs"
+                >
+                  delete
+                </Button>
+              </Center>
+            </Container>
+          </MediaQuery>
+          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+            <Affix position={{ bottom: 20, right: 20 }} zIndex={10}>
+              <Group spacing="sm">
+                <Button onClick={handleSave} variant="filled">
+                  save
+                </Button>
+                <Button
+                  disabled={!currentNote}
+                  onClick={handleDelete}
+                  variant="outline"
+                >
+                  delete
+                </Button>
+              </Group>
+            </Affix>
+          </MediaQuery>
         </AppShell>
       )}
     </>
