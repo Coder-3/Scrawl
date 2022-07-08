@@ -20,7 +20,7 @@ import {
   Avatar,
 } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
-import NotesList from "./components/NotesList";
+import NotesList from "./NotesList";
 import { useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import Auth from "./Auth";
@@ -40,6 +40,7 @@ function App() {
   const [smEditorHeight, setSmEditorHeight] = useState(height - 250);
 
   const titleRef = useRef(null);
+  const smTitleRef = useRef(null);
 
   useEffect(() => {
     setEditorHeight(height - 200);
@@ -164,7 +165,6 @@ function App() {
     setTitle("");
     setCurrentNote(null);
     setOpened(false);
-    titleRef.current.focus();
   };
 
   const handleAutoSave = async () => {
@@ -208,14 +208,35 @@ function App() {
                 <Center mb="md">
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <Avatar mx="xs" src="logo.png" alt="" />
-                    <Text size="lg">Notes</Text>
+                    <Text size="lg">Scrawl</Text>
                   </div>
                 </Center>
               </MediaQuery>
               <Center>
-                <Button onClick={newNote} mb="sm" fullWidth>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Button
+                  onClick={() => {
+                    newNote();
+                    smTitleRef.current.focus();
+                  }}
+                  mb="sm"
+                  fullWidth
+                >
                   New Note
                 </Button>
+                </MediaQuery>
+                <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                <Button
+                  onClick={() => {
+                    newNote();
+                    titleRef.current.focus();
+                  }}
+                  mb="sm"
+                  fullWidth
+                >
+                  New Note
+                </Button> 
+                </MediaQuery>
               </Center>
               <Input
                 variant="default"
@@ -242,7 +263,7 @@ function App() {
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <Avatar mx="xs" src="logo.png" alt="" />
                       <Text ml="xs" size="lg">
-                        Notes
+                        Scrawl
                       </Text>
                     </div>
                   </Grid.Col>
@@ -292,7 +313,7 @@ function App() {
           })}
         >
           <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <Container p={0} style={{ width: "100%", maxWidth: "100%"}}>
+            <Container p={0} style={{ width: "100%", maxWidth: "100%" }}>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -332,7 +353,7 @@ function App() {
                 size="sm"
                 required
                 onBlur={handleAutoSave}
-                ref={titleRef}
+                ref={smTitleRef}
               />
               <MDEditor
                 value={value}
