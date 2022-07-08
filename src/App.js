@@ -165,6 +165,7 @@ function App() {
     setContent("");
     setTitle("");
     setCurrentNote(null);
+    setOpened(false);
     titleRef.current.focus();
   };
 
@@ -205,6 +206,16 @@ function App() {
               hiddenBreakpoint="sm"
               hidden={!opened}
             >
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <Center mb="md">
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                      <Avatar mx="xs" src="logo.png" alt="" />
+                      <Text size="lg">
+                        Notes
+                      </Text>
+                    </div>
+                </Center>
+                </MediaQuery>
               <Center>
                 <Button onClick={newNote} mb="sm" fullWidth>
                   New Note
@@ -226,26 +237,51 @@ function App() {
           }
           header={
             <Header height={60}>
-              <Grid
-                justify="space-between"
-                style={{ height: "75px", alignItems: "center" }}
-              >
-                <Grid.Col span={2}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Avatar mx="xs" src="logo.png" alt="" />
-                    <Text ml="xs" size="lg">
-                      Notes
-                    </Text>
-                  </div>
-                </Grid.Col>
-                <Grid.Col
-                  style={{ display: "flex", justifyContent: "flex-end" }}
-                  span={2}
-                  mr="sm"
+              <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                <Grid
+                  justify="space-between"
+                  style={{ height: "75px", alignItems: "center" }}
                 >
-                  <Button onClick={handleSignout}>Sign Out</Button>
-                </Grid.Col>
-              </Grid>
+                  <Grid.Col span={2}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <Avatar mx="xs" src="logo.png" alt="" />
+                      <Text ml="xs" size="lg">
+                        Notes
+                      </Text>
+                    </div>
+                  </Grid.Col>
+                  <Grid.Col
+                    style={{ display: "flex", justifyContent: "flex-end" }}
+                    span={2}
+                    mr="sm"
+                  >
+                    <Button onClick={handleSignout}>Sign Out</Button>
+                  </Grid.Col>
+                </Grid>
+              </MediaQuery>
+              <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+                <SimpleGrid
+                  cols={2}
+                  style={{ height: "60px", alignContent: "center" }}
+                  mx="sm"
+                >
+                  <div>
+                    <Burger
+                      opened={opened}
+                      onClick={() => setOpened((o) => !o)}
+                      size="sm"
+                      color="gray"
+                      mr="xl"
+                    />
+                  </div>
+                  <div
+                    style={{ display: "flex", justifyContent: "flex-end" }}
+                    mr="sm"
+                  >
+                    <Button onClick={handleSignout}>Sign Out</Button>
+                  </div>
+                </SimpleGrid>
+              </MediaQuery>
             </Header>
           }
           styles={(theme) => ({
